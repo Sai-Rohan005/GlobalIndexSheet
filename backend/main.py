@@ -5,6 +5,9 @@ from routes.allroutes import allroute
 app=Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 app.register_blueprint(allroute)
+@app.route('/')
+def home():
+    return "Backend is running!"
 
 if __name__ == "__main__" :
     app.run(host="0.0.0.0",port=8000,debug=True)
