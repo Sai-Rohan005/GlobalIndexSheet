@@ -1,14 +1,11 @@
-
-import pytesseract
 from PIL import Image
-from pdf2image import convert_from_bytes
 from PyPDF2 import PdfReader
 from docx import Document
 import io
 
-
 from sentence_transformers import SentenceTransformer, util
 
+# Load model once
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
 
@@ -19,13 +16,9 @@ def extract_text_pdf(file_bytes):
     text = ""
 
     for page in reader.pages:
-        text += page.extract_text() or ""
-
-    # OCR fallback
-    if not text.strip():
-        images = convert_from_bytes(file_bytes)
-        for img in images:
-            text += pytesseract.image_to_string(img)
+        extracted = page.extract_text()
+        if extracted:
+            text += extracted
 
     return text
 
@@ -36,12 +29,15 @@ def extract_text_docx(file_bytes):
 
 
 def extract_text_image(file_bytes):
-    image = Image.open(io.BytesIO(file_bytes))
-    return pytesseract.image_to_string(image)
+    # 🔥 OCR REMOVED (Render-safe fallback)
+    return "Image text extraction not supported in deployed version"
 
 
 def extract_text_txt(file_bytes):
-    return file_bytes.decode("utf-8")
+    try:
+        return file_bytes.decode("utf-8")
+    except:
+        return ""
 
 
 def extract_text(filename, content):
@@ -62,7 +58,12 @@ def extract_text(filename, content):
     return ""
 
 
+# -------- RELEVANCE CHECK -------- #
+
 def is_relevant(subject, text):
+    if not text.strip():
+        return False, 0.0
+
     subject_emb = model.encode(subject, convert_to_tensor=True)
 
     # Split into chunks
@@ -78,9 +79,5 @@ def is_relevant(subject, text):
         if score > max_score:
             max_score = score
 
-    return max_score > 0.02, max_score
-
-
-
-
-
+    # 🔥 Slightly improved threshold
+    return max_score > 0.03, float(max_score)
