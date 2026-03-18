@@ -36,8 +36,9 @@ function Dashboard() {
     if(result.status=="irrelevant"){
         setmessage("The File uploaded is irrelevant to Studies")
         setisirrevelent(true)
+        setIsResults(false)
     }else{
-
+        setisirrevelent(false)
         setData(result.gis || result);
         setIsResults(true);
     }

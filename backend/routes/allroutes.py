@@ -25,7 +25,7 @@ def upload():
             "status": "irrelevant",
             "score": float(score)
         })
-
+    
     return jsonify({
         "status": "relevant",
         "score": float(score),

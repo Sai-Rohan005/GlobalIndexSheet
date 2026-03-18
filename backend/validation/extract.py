@@ -6,10 +6,11 @@ from PyPDF2 import PdfReader
 from docx import Document
 import io
 
+
 from sentence_transformers import SentenceTransformer, util
 
-# Load embedding model once
 model = SentenceTransformer('all-MiniLM-L6-v2')
+
 
 # -------- TEXT EXTRACTION -------- #
 
@@ -61,14 +62,23 @@ def extract_text(filename, content):
     return ""
 
 
-
 def is_relevant(subject, text):
     subject_emb = model.encode(subject, convert_to_tensor=True)
-    text_emb = model.encode(text[:1000], convert_to_tensor=True)
 
-    score = util.cos_sim(subject_emb, text_emb).item()
+    # Split into chunks
+    chunk_size = 500
+    chunks = [text[i:i+chunk_size] for i in range(0, len(text), chunk_size)]
 
-    return score > 0.3, score
+    max_score = 0
+
+    for chunk in chunks[:10]:  # limit for speed
+        chunk_emb = model.encode(chunk, convert_to_tensor=True)
+        score = util.cos_sim(subject_emb, chunk_emb).item()
+
+        if score > max_score:
+            max_score = score
+
+    return max_score > 0.02, max_score
 
 
 
