@@ -4,17 +4,13 @@ import json
 import os
 import time
 
-# Load env
 load_dotenv()
 
-# Configure API
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
-# Model
 model = genai.GenerativeModel("models/gemini-flash-latest")
 
 
-# -------- CLEAN JSON -------- #
 def clean_json(text):
     text = text.strip()
     if text.startswith("```"):
@@ -22,7 +18,6 @@ def clean_json(text):
     return text
 
 
-# -------- NORMALIZE KEYS -------- #
 def normalize_keys(gis):
     normalized = {"Grand Topics": []}
 
@@ -49,7 +44,6 @@ def normalize_keys(gis):
     return normalized
 
 
-# -------- STRUCTURE ENFORCEMENT -------- #
 def enforce_structure(gis):
     if "Grand Topics" not in gis:
         return {"Grand Topics": []}
@@ -88,7 +82,6 @@ def enforce_structure(gis):
     return {"Grand Topics": fixed_gt}
 
 
-# -------- CODING SYSTEM -------- #
 def add_topic_codes(gis):
     gt_counter = 1
 
@@ -123,7 +116,6 @@ def add_topic_codes(gis):
     return gis
 
 
-# -------- TAGGING -------- #
 def add_tags_and_difficulty(gis, subject):
     try:
         prompt = f"""
@@ -154,7 +146,6 @@ def add_tags_and_difficulty(gis, subject):
         return gis
 
 
-# -------- SOURCE TRACEABILITY -------- #
 def add_source_traceability(gis, text):
     try:
         prompt = f"""
@@ -192,7 +183,6 @@ def add_source_traceability(gis, text):
         return gis
 
 
-# -------- MAIN FUNCTION -------- #
 def generate_gis(subject, text):
     try:
         if not subject:

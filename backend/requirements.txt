@@ -4,5 +4,4 @@ python-dotenv
 google-generativeai
 PyPDF2
 Pillow
-sentence-transformers
 python-docx
