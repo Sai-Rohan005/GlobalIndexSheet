@@ -1,12 +1,12 @@
-/* Center everything */
+/* Container */
 .container {
-  height: 100vh;
+  min-height: 100vh;              /* ✅ allow page to grow */
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   gap: 25px;
   font-family: Arial, sans-serif;
+  padding: 20px;
 }
 
 /* Upload Box */
@@ -52,32 +52,49 @@
   background-color: #2c6ed5;
 }
 
-/* Table */
+/* Table container */
 .table-container {
   width: 80%;
   margin-top: 20px;
+
+  max-height: 70vh;        /* ✅ scrollable height */
+  overflow-y: auto;        /* ✅ enable vertical scroll */
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 
+/* Table */
 table {
   width: 100%;
   border-collapse: collapse;
 }
 
+/* Sticky header (🔥 looks professional) */
 th {
   background-color: #4a90e2;
   color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
+/* Cells */
 th, td {
   padding: 10px;
   border: 1px solid #ddd;
   text-align: left;
+
+  white-space: normal;        /* ✅ wrap text */
+  word-break: break-word;     /* ✅ prevent overflow */
+  vertical-align: top;
 }
 
+/* Alternate row color */
 tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
+/* Subtopic box */
 .subtopic-item {
   margin-bottom: 10px;
   padding: 6px;
@@ -86,14 +103,19 @@ tr:nth-child(even) {
   border-radius: 4px;
 }
 
+/* Source box */
 .source-box {
-  margin-top: 4px;
-  padding: 5px;
+  margin-top: 5px;
+  padding: 6px;
   background: #eef5ff;
   border-left: 3px solid #2ecc71;
   border-radius: 4px;
+
+  max-height: 100px;       /* optional */
+  overflow-y: auto;        /* scroll inside if long */
 }
 
+/* Error */
 .error-text {
   color: red;
   font-weight: bold;
