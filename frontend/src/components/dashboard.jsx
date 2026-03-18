@@ -43,6 +43,10 @@ function Dashboard() {
         method: "POST",
         body: formData,
       });
+      // const res = await fetch("http://localhost:8000/upload", {
+      //   method: "POST",
+      //   body: formData,
+      // });
       
 
       const result = await res.json();
