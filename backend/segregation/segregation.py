@@ -199,27 +199,49 @@ def generate_gis(subject, text):
             subject = "General Studies"
 
         prompt = f"""
-        You are an expert curriculum designer.
+                    You are an expert curriculum designer and knowledge architect.
 
-        Subject: {subject}
+                    Subject: {subject}
 
-        Content:
-        {text[:1500]}
+                    Content:
+                    {text[:1500]}
 
-        Create a structured Global Index Sheet with:
+                    Your task is to:
 
-        1. Grand Topics
-        2. Topics
-        3. Subtopics
+                    1. Extract key concepts from the content
+                    2. Remove duplicate or overlapping concepts
+                    3. Group related concepts into a logical hierarchy
 
-        Rules:
-        - Maintain hierarchy
-        - Avoid duplicates
-        - Every GT must have topics
-        - Every topic must have subtopics
+                    Output must follow:
 
-        Return ONLY valid JSON.
-        """
+                    - Grand Topics (broad domains)
+                    - Topics (grouped concepts)
+                    - Subtopics (granular ideas)
+
+                    STRICT RULES:
+                    - Avoid duplicate or similar topics
+                    - Merge similar concepts intelligently
+                    - Maintain semantic hierarchy (no random grouping)
+                    - Ensure clarity and logical flow
+                    - Each Grand Topic must have at least one Topic
+                    - Each Topic must have at least one Subtopic
+
+                    Return ONLY valid JSON:
+
+                    {{
+                    "Grand Topics": [
+                        {{
+                        "name": "",
+                        "topics": [
+                            {{
+                            "name": "",
+                            "subtopics": []
+                            }}
+                        ]
+                        }}
+                    ]
+                    }}
+                    """
 
         for attempt in range(3):
             try:

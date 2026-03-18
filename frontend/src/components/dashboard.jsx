@@ -9,10 +9,12 @@ function Dashboard() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // File select
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
+  // Drag drop
   const handleDrop = (e) => {
     e.preventDefault();
     setFile(e.dataTransfer.files[0]);
@@ -22,6 +24,7 @@ function Dashboard() {
     e.preventDefault();
   };
 
+  // Upload
   const handleUpload = async () => {
     if (!file) return alert("Please select a file");
 
@@ -102,67 +105,61 @@ function Dashboard() {
               <tr>
                 <th>Grand Topic</th>
                 <th>Topic</th>
-                <th>Subtopics (with Metadata)</th>
+                <th>Subtopic</th>
               </tr>
             </thead>
 
             <tbody>
               {data?.["Grand Topics"]?.length > 0 ? (
                 data["Grand Topics"].flatMap((gt, i) =>
-                  gt.topics?.map((topic, j) => (
-                    <tr key={`${i}-${j}`}>
+                  gt.topics?.flatMap((topic, j) =>
+                    topic.subtopics?.map((s, k) => (
+                      <tr key={`${i}-${j}-${k}`}>
 
-                      {/* Grand Topic */}
-                      <td>
-                        <strong>{gt.code}</strong> <br />
-                        {gt.name}
-                      </td>
+                        {/* Grand Topic */}
+                        <td>
+                          <strong>{gt.code}</strong> <br />
+                          {gt.name}
+                        </td>
 
-                      {/* Topic */}
-                      <td>
-                        <strong>{topic.code}</strong> <br />
-                        {topic.name}
-                        <br />
-                        <small>
-                          {topic.difficulty && `📊 ${topic.difficulty}`}
-                          {topic.blooms_level && ` | 🧠 ${topic.blooms_level}`}
-                        </small>
-                      </td>
+                        {/* Topic */}
+                        <td>
+                          <strong>{topic.code}</strong> <br />
+                          {topic.name}
+                          <br />
+                          <small>
+                            {topic.difficulty && `📊 ${topic.difficulty}`}
+                            {topic.blooms_level && ` | 🧠 ${topic.blooms_level}`}
+                          </small>
+                        </td>
 
-                      {/* Subtopics */}
-                      <td>
-                        {topic.subtopics?.map((s) => (
-                          <div key={s.code} className="subtopic-item">
+                        {/* Subtopic */}
+                        <td>
+                          <strong>{s.code}</strong>: {s.name}
 
-                            {/* Name */}
-                            <strong>{s.code}</strong>: {s.name}
+                          <br />
+                          <small>
+                            {s.difficulty && `📊 ${s.difficulty}`}
+                            {s.blooms_level && ` | 🧠 ${s.blooms_level}`}
+                          </small>
 
-                            {/* Tags */}
-                            <br />
-                            <small>
-                              {s.difficulty && `📊 ${s.difficulty}`}
-                              {s.blooms_level && ` | 🧠 ${s.blooms_level}`}
-                            </small>
+                          {/* Source Traceability */}
+                          {s.source && (
+                            <div className="source-box">
+                              <small> 
+                                📄 <b>Snippet:</b>
+                                 {s.source.snippet} <br />
+                                  📍 <b>Section:</b> 
+                                  {s.source.section} <br /> 
+                                  🎯 <b>Confidence:</b> 
+                                  {s.source.confidence} </small>
+                            </div>
+                          )}
+                        </td>
 
-                            {/* Source Traceability 🔥 */}
-                            {s.source && (
-                              <div className="source-box">
-                                <small>
-                                  📄 <b>Snippet:</b> {s.source.snippet}
-                                  <br />
-                                  📍 <b>Section:</b> {s.source.section}
-                                  <br />
-                                  🎯 <b>Confidence:</b> {s.source.confidence}
-                                </small>
-                              </div>
-                            )}
-
-                          </div>
-                        ))}
-                      </td>
-
-                    </tr>
-                  ))
+                      </tr>
+                    ))
+                  )
                 )
               ) : (
                 <tr>
