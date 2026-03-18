@@ -9,12 +9,10 @@ function Dashboard() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // File select
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
-  // Drag drop
   const handleDrop = (e) => {
     e.preventDefault();
     setFile(e.dataTransfer.files[0]);
@@ -24,7 +22,6 @@ function Dashboard() {
     e.preventDefault();
   };
 
-  // Upload
   const handleUpload = async () => {
     if (!file) return alert("Please select a file");
 
@@ -105,7 +102,7 @@ function Dashboard() {
               <tr>
                 <th>Grand Topic</th>
                 <th>Topic</th>
-                <th>Subtopics</th>
+                <th>Subtopics (with Metadata)</th>
               </tr>
             </thead>
 
@@ -114,7 +111,7 @@ function Dashboard() {
                 data["Grand Topics"].flatMap((gt, i) =>
                   gt.topics?.map((topic, j) => (
                     <tr key={`${i}-${j}`}>
-                      
+
                       {/* Grand Topic */}
                       <td>
                         <strong>{gt.code}</strong> <br />
@@ -136,12 +133,30 @@ function Dashboard() {
                       <td>
                         {topic.subtopics?.map((s) => (
                           <div key={s.code} className="subtopic-item">
+
+                            {/* Name */}
                             <strong>{s.code}</strong>: {s.name}
+
+                            {/* Tags */}
                             <br />
                             <small>
                               {s.difficulty && `📊 ${s.difficulty}`}
                               {s.blooms_level && ` | 🧠 ${s.blooms_level}`}
                             </small>
+
+                            {/* Source Traceability 🔥 */}
+                            {s.source && (
+                              <div className="source-box">
+                                <small>
+                                  📄 <b>Snippet:</b> {s.source.snippet}
+                                  <br />
+                                  📍 <b>Section:</b> {s.source.section}
+                                  <br />
+                                  🎯 <b>Confidence:</b> {s.source.confidence}
+                                </small>
+                              </div>
+                            )}
+
                           </div>
                         ))}
                       </td>

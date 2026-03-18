@@ -77,3 +77,24 @@ th, td {
 tr:nth-child(even) {
   background-color: #f2f2f2;
 }
+
+.subtopic-item {
+  margin-bottom: 10px;
+  padding: 6px;
+  border-left: 3px solid #4a90e2;
+  background: #f9f9f9;
+  border-radius: 4px;
+}
+
+.source-box {
+  margin-top: 4px;
+  padding: 5px;
+  background: #eef5ff;
+  border-left: 3px solid #2ecc71;
+  border-radius: 4px;
+}
+
+.error-text {
+  color: red;
+  font-weight: bold;
+}

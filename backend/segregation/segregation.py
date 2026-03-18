@@ -4,7 +4,7 @@ import json
 import os
 import time
 
-# Load env variables
+# Load env
 load_dotenv()
 
 # Configure API
@@ -22,20 +22,18 @@ def clean_json(text):
     return text
 
 
-# -------- NORMALIZE KEYS (VERY IMPORTANT) -------- #
+# -------- NORMALIZE KEYS -------- #
 def normalize_keys(gis):
     normalized = {"Grand Topics": []}
 
     for gt in gis.get("Grand Topics", []):
         gt_name = gt.get("name") or gt.get("title") or "Unnamed Grand Topic"
-
         topics = gt.get("topics") or gt.get("Topics") or []
 
         norm_topics = []
 
         for topic in topics:
             t_name = topic.get("name") or topic.get("title") or "Unnamed Topic"
-
             subtopics = topic.get("subtopics") or topic.get("Subtopics") or []
 
             norm_topics.append({
@@ -147,13 +145,50 @@ def add_tags_and_difficulty(gis, subject):
         """
 
         response = model.generate_content(prompt)
-
         cleaned = clean_json(response.text)
 
         return json.loads(cleaned)
 
     except Exception as e:
         print("⚠️ Tagging failed:", e)
+        return gis
+
+
+# -------- SOURCE TRACEABILITY -------- #
+def add_source_traceability(gis, text):
+    try:
+        prompt = f"""
+        You are an AI system that maps topics to source content.
+
+        Document:
+        {text[:2000]}
+
+        Topics:
+        {json.dumps(gis, indent=2)}
+
+        For each topic and subtopic, add:
+
+        "source": {{
+          "snippet": "short relevant text",
+          "section": "context or section name",
+          "confidence": 0.0 to 1.0
+        }}
+
+        Rules:
+        - Keep structure unchanged
+        - Snippet should be short (1–2 lines)
+        - Confidence should be realistic
+
+        Return ONLY valid JSON.
+        """
+
+        response = model.generate_content(prompt)
+        cleaned = clean_json(response.text)
+
+        return json.loads(cleaned)
+
+    except Exception as e:
+        print("⚠️ Traceability failed:", e)
         return gis
 
 
@@ -194,16 +229,18 @@ def generate_gis(subject, text):
                 print("🔍 RAW OUTPUT:\n", raw)
 
                 cleaned = clean_json(raw)
-
                 parsed = json.loads(cleaned)
 
-                # 🔥 CRITICAL PIPELINE
+                # 🔥 PIPELINE
                 parsed = normalize_keys(parsed)
                 parsed = enforce_structure(parsed)
                 parsed = add_topic_codes(parsed)
 
                 if "error" not in parsed:
                     parsed = add_tags_and_difficulty(parsed, subject)
+
+                if "error" not in parsed:
+                    parsed = add_source_traceability(parsed, text)
 
                 return parsed
 
