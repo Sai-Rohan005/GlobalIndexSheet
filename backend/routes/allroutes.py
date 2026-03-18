@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from validation.extract import extract_text, is_relevant
+from segregation.segregation import generate_gis
 
 allroute = Blueprint("allroute", __name__)
 
@@ -25,9 +26,9 @@ def upload():
             "status": "irrelevant",
             "score": float(score)
         })
-    
+    gis = generate_gis(subject, text)
     return jsonify({
         "status": "relevant",
         "score": float(score),
-        "text_preview": text[:500]
+        "gis": gis
     })
