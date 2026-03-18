@@ -39,7 +39,7 @@ function Dashboard() {
     formData.append("subject", "General");
 
     try {
-      const res = await fetch("https://globalindexsheet.onrender.com", {
+      const res = await fetch("https://globalindexsheet.onrender.com/upload", {
         method: "POST",
         body: formData,
       });
