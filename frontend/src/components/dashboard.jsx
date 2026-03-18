@@ -34,7 +34,7 @@ function Dashboard() {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("subject", "General"); // you can change dynamically
+    formData.append("subject", "General");
 
     try {
       const res = await fetch("http://localhost:8000/upload", {
@@ -52,7 +52,6 @@ function Dashboard() {
         setData(result.gis);
         setIsResults(true);
       }
-
     } catch (err) {
       console.error(err);
       setMessage("⚠️ Something went wrong while uploading");
@@ -93,7 +92,7 @@ function Dashboard() {
       {/* Loading */}
       {loading && <h3>⏳ Processing... Generating GIS...</h3>}
 
-      {/* Irrelevant Message */}
+      {/* Error */}
       {isIrrelevant && <h3 className="error-text">{message}</h3>}
 
       {/* Results */}
@@ -115,13 +114,38 @@ function Dashboard() {
                 data["Grand Topics"].flatMap((gt, i) =>
                   gt.topics?.map((topic, j) => (
                     <tr key={`${i}-${j}`}>
-                      <td>{gt.name || "N/A"}</td>
-                      <td>{topic.name || "N/A"}</td>
+                      
+                      {/* Grand Topic */}
                       <td>
-                        {topic.subtopics?.length > 0
-                          ? topic.subtopics.join(", ")
-                          : "N/A"}
+                        <strong>{gt.code}</strong> <br />
+                        {gt.name}
                       </td>
+
+                      {/* Topic */}
+                      <td>
+                        <strong>{topic.code}</strong> <br />
+                        {topic.name}
+                        <br />
+                        <small>
+                          {topic.difficulty && `📊 ${topic.difficulty}`}
+                          {topic.blooms_level && ` | 🧠 ${topic.blooms_level}`}
+                        </small>
+                      </td>
+
+                      {/* Subtopics */}
+                      <td>
+                        {topic.subtopics?.map((s) => (
+                          <div key={s.code} className="subtopic-item">
+                            <strong>{s.code}</strong>: {s.name}
+                            <br />
+                            <small>
+                              {s.difficulty && `📊 ${s.difficulty}`}
+                              {s.blooms_level && ` | 🧠 ${s.blooms_level}`}
+                            </small>
+                          </div>
+                        ))}
+                      </td>
+
                     </tr>
                   ))
                 )
