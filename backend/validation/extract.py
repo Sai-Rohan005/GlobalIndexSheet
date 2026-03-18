@@ -6,8 +6,6 @@ import google.generativeai as genai
 import os
 
 
-# -------- TEXT EXTRACTION -------- #
-
 def extract_text_pdf(file_bytes):
     reader = PdfReader(io.BytesIO(file_bytes))
     text = ""
@@ -26,7 +24,6 @@ def extract_text_docx(file_bytes):
 
 
 def extract_text_image(file_bytes):
-    # OCR removed (deployment safe)
     return "Image text extraction not supported"
 
 
@@ -55,14 +52,12 @@ def extract_text(filename, content):
     return ""
 
 
-# -------- RELEVANCE CHECK (LIGHTWEIGHT) -------- #
 
 def is_relevant(subject, text):
     try:
         if not text.strip():
             return False, 0.0
 
-        # Configure Gemini
         genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
         model = genai.GenerativeModel("models/gemini-flash-latest")
 
@@ -88,4 +83,4 @@ def is_relevant(subject, text):
 
     except Exception as e:
         print("Relevance check error:", e)
-        return True, 0.5  # fallback (avoid blocking flow)
+        return True, 0.5  

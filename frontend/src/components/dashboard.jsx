@@ -11,10 +11,8 @@ function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [onload,setonload] =useState(false);
 
-  // 🔥 NEW STATE
   const [showUpload, setShowUpload] = useState(true);
 
-  // File select
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
@@ -28,7 +26,6 @@ function Dashboard() {
     e.preventDefault();
   };
 
-  // Upload
   const handleUpload = async () => {
     if (!file) return alert("Please select a file");
     if(loading) return 
@@ -42,7 +39,7 @@ function Dashboard() {
     formData.append("subject", "General");
 
     try {
-      const res = await fetch("http://localhost:8000/upload", {
+      const res = await fetch("https://globalindexsheet.onrender.com", {
         method: "POST",
         body: formData,
       });
@@ -56,7 +53,6 @@ function Dashboard() {
         setData(result.gis);
         setIsResults(true);
 
-        // 🔥 Hide upload after success
         setShowUpload(false);
       }
     } catch (err) {
@@ -68,7 +64,6 @@ function Dashboard() {
     setLoading(false);
   };
 
-  // 🔥 Reset to upload again
   const handleNewUpload = () => {
     setFile(null);
     setData(null);
@@ -82,7 +77,6 @@ function Dashboard() {
     <div className="container">
         <br />
         <h1>AI Powered Global Index Sheet Generator</h1><br />
-      {/* 🔥 Upload Section (Conditionally Rendered) */}
       {showUpload && (
         <>
           <div
@@ -110,20 +104,16 @@ function Dashboard() {
         </>
       )}
 
-      {/* 🔥 Show Button After Result */}
       {!showUpload && (
         <button className="upload-btn" onClick={handleNewUpload}>
           🔄 Upload New File
         </button>
       )}
 
-      {/* Loading */}
       {loading && <h3>⏳ Processing... Generating GIS...</h3>}
 
-      {/* Error */}
       {isIrrelevant && <h3 className="error-text">{message}</h3>}
 
-      {/* Results */}
       {!isIrrelevant && isResults && data && (
         <div className="table-container">
           <h3>📊 Global Index Sheet</h3>
